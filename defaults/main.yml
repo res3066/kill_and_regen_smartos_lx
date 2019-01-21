@@ -1,0 +1,12 @@
+---
+# vars file for kill-and-regen-smartos-guest
+
+vmadm_resolvers:
+  - "8.8.8.8"
+  - "8.8.4.4"
+
+vmadm_quota: 200
+vmadm_max_physical_memory: 1024
+
+...
+
