@@ -11,6 +11,11 @@
     state: absent
   delegate_to: "{{ global_host }}"
 
+- name: load root_authorized_keys for vmadm
+  include_vars:
+    file: "{{ host_root_ssh_keys }}/root_authorized_keys.yml"
+    name: rak
+
 - vmadm:
     brand:   "lx"
     kernel_version: "3.13.0"
@@ -19,11 +24,12 @@
     hostname: "{{ inventory_hostname }}"
     image_uuid: "{{ smartos_image }}"
     customer_metadata:
+      local_metadata: "{{ vmadm_local_metadata if vmadm_local_metadata is defined else omit }}"
       cluetrust_poc": "RS"
       name": "Rob Seastrom"
       phone": "+17036220001"
       email": "rs@seastrom.com"
-      root_authorized_keys: "ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAsuNrb+7erWEyV1TMVGEfBSYK+lImGUouNW6/7EbYOV53f0WzzBaFmQkYNrMzSzxKn3/YEVYmUtdrq4OxPS9D9WrqeK9mLCFjRSuhW1U6wiWMg3jo0SyTl635y4MKsRWGU9NoxlS1VWK1RTfzxPbvNqO2dN9IxPAeAK64nZbYxrkRoNRQswd1EQcPHnNoAZYVkSe80V1g571gzmoCOV2iensetOKA6SAak4DqhqJLa//V+xS2ZADsfo+py5qrF4cTnumEcBHH7zHVoOfd3eEVhT1FiM28gjCsJcgs6GLh5OrXPVzuYvvLtJiJceH2rS2xtgK/Yj6KVz9JUov2UHc/iw== rs@seastrom.com default key"
+      root_authorized_keys: "{{ rak.root_authorized_keys if rak is defined else omit }}"
       user-script: "mkdir /.ct-configured >/dev/null 2>&1 && ( /usr/sbin/mdata-get root_authorized_keys > ~root/.ssh/authorized_keys ; /usr/sbin/mdata-get root_authorized_keys > ~admin/.ssh/authorized_keys ; echo 'KbdInteractiveAuthentication no' >> /etc/ssh/sshd_config ; service ssh restart )"
     max_physical_memory: "{{ vmadm_max_physical_memory }}"
     resolvers: "{{ vmadm_resolvers }}"
