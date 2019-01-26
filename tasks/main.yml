@@ -28,9 +28,9 @@
 #      local_metadata: "{{ vmadm_local_metadata if vmadm_local_metadata is defined else omit }}"
 
       local_metadata: 
-        foo: test1
-        bar: test2
-        baz: test3
+        - foo: test1
+        - bar: test2
+        - baz: test3
 
       ct_poc: "{{ vmadm_ct_poc if vmadm_ct_poc is defined else omit }}"
       ct_cust_name: "{{ vmadm_ct_cust_name if vmadm_ct_cust_name is defined else omit }}"
